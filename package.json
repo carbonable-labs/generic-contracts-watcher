@@ -11,12 +11,14 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@heroicons/react": "^2.0.18",
     "@remix-run/css-bundle": "^2.0.1",
     "@remix-run/node": "^2.0.1",
     "@remix-run/react": "^2.0.1",
     "@remix-run/serve": "^2.0.1",
     "@starknet-react/chains": "0.1.0-next.0",
     "@starknet-react/core": "2.0.0-next.0",
+    "@svgdotjs/svg.js": "^3.2.0",
     "get-starknet-core": "^3.2.0",
     "isbot": "^3.6.8",
     "react": "^18.2.0",

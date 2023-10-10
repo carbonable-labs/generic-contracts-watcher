@@ -7,21 +7,27 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useOutletContext,
 } from "@remix-run/react";
 import styles from "./tailwind.css";
 import { StarknetProvider } from "./components/starknet/StarknetProvider";
+import Header from "./components/menu/Header";
+import type { Config } from "./types/config";
+import configFile from "./config/config.json";
+import { useMemo } from "react";
+import Back from "./components/common/Back";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
 export const loader: LoaderFunction = async () => {
     const defautlNetwork = process.env.NETWORK
-    const infuraApiKey = process.env.INFURA_API_KEY;
 
-    return json({ defautlNetwork, infuraApiKey });
+    return json({ defautlNetwork });
 };
 
 export default function App() {
-  const { defautlNetwork, infuraApiKey } = useLoaderData();
+  const { defautlNetwork } = useLoaderData();
+  const config = useMemo(() => configFile, []);
 
   return (
     <html lang="en">
@@ -35,9 +41,13 @@ export default function App() {
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"></link>
       </head>
       <body className="bg-neutral-800 text-neutral-100">
-        <StarknetProvider defautlNetwork={defautlNetwork} infuraApiKey={infuraApiKey} >
-          <main className="px-4 py-8">
-            <Outlet />
+        <StarknetProvider defautlNetwork={defautlNetwork}  >
+          <header className="fixed top-0 w-full z-50">
+            <Header />
+          </header>
+          <main className="px-4 py-8 md:px-8 mt-[80px] relative w-screen mx-auto 2xl:max-w-6xl font-inter">
+            <Back />
+            <Outlet context={ config } />
           </main>
           <ScrollRestoration />
           <Scripts />
@@ -46,4 +56,8 @@ export default function App() {
       </body>
     </html>
   );
+}
+
+export function useConfig() {
+  return useOutletContext<Config>();
 }

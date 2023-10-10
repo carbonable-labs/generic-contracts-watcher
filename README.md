@@ -53,6 +53,7 @@ Now you'll need to pick a host to deploy it to.
 ```sh
 NETWORK=testnet|mainnet
 INFURA_API_KEY=""
+RPC=""
 ```
 
 ## License
