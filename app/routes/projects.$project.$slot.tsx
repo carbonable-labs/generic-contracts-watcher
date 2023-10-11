@@ -5,6 +5,7 @@ import ProjectAbiWrapper from "~/components/project/ProjectAbiWrapper";
 import SlotURIWrapper from "~/components/project/SlotURI";
 import ProjectInfo from "~/components/project/ProjectInfo";
 import ProjectAttributes from "~/components/project/ProjectAttributes";
+import ProjectTabs from "~/components/project/ProjectTabs";
 
 export async function loader({params}: LoaderFunctionArgs) {
     return json({ project_address: params.project, slot: params.slot });
@@ -35,6 +36,12 @@ export default function Index() {
                         </div>
                     </div>
                 </SlotURIWrapper>
+                <div className="w-full">
+                    <div className="text-xl font-bold uppercase mt-8">
+                        Contracts analytics
+                    </div>
+                    <ProjectTabs />
+                </div>
             </ProjectAbiWrapper>
         </>
     );

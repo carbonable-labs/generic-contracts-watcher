@@ -3,7 +3,12 @@ import { createContext, useContext, useEffect, useState } from "react";
 import type { Abi } from "starknet";
 import { fetchAbi } from "~/utils/starknet";
 
-const ProjectAbiContext = createContext<Abi>({} as Abi);
+type ProjectAbiContextType = {
+    abi: Abi,
+    projectAddress: string
+};
+
+const ProjectAbiContext = createContext<ProjectAbiContextType>({} as ProjectAbiContextType);
 
 export default function ProjectAbiWrapper({ children, projectAddress }: { children: React.ReactNode, projectAddress: string }) {
     const { provider } = useProvider();
@@ -20,7 +25,7 @@ export default function ProjectAbiWrapper({ children, projectAddress }: { childr
     if (abi === undefined) { return null; }
 
     return (
-        <ProjectAbiContext.Provider value={ abi }>
+        <ProjectAbiContext.Provider value={ {abi, projectAddress} }>
             { children }
         </ProjectAbiContext.Provider>
     );

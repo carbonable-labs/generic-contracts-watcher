@@ -7,7 +7,7 @@ import { useProjectAbi } from "./ProjectAbiWrapper";
 const SlotURIContext = createContext<SlotURI>({} as SlotURI);
 export default function SlotURIWrapper({ children, slot, projectAddress }: { children: React.ReactNode, slot: string, projectAddress: string }) {
     const [slotUri, setSlotUri] = useState<SlotURI|undefined>(undefined);
-    const abi = useProjectAbi();
+    const { abi } = useProjectAbi();
 
     const { data, isLoading, error } = useContractRead({
         address: projectAddress,

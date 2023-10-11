@@ -7,7 +7,7 @@ export default function ProjectInfo({slot}: {slot: string}) {
         <>
             <div className="text-3xl uppercase font-bold mb-1">
                 {slotURI.name}
-                <span className="text-xl text-neutral-300 ml-2 font-light">(slot: {slot})</span>
+                <span className="text-xl text-neutral-300 ml-2 font-light">(slot {slot})</span>
             </div>
             <div className="text-neutral-100">{slotURI.description}</div>
             <div className="mt-4">
