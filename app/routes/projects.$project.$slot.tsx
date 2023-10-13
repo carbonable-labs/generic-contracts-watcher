@@ -38,7 +38,7 @@ export default function Index() {
                 </SlotURIWrapper>
                 <div className="w-full">
                     <div className="text-xl font-bold uppercase mt-8">
-                        Contracts analytics
+                        Contracts attributes
                     </div>
                     <ProjectTabs />
                 </div>

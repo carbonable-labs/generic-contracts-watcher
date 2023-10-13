@@ -1,4 +1,8 @@
 import * as Tabs from '@radix-ui/react-tabs';
+import Project from './attributes/Project';
+import Minter from './attributes/Minter';
+import Yielder from './attributes/Yielder';
+import Offseter from './attributes/Offseter';
 
 export default function ProjectTabs() {
     const triggerClassName = 'px-6 py-3 flex-1 flex items-center justify-start text-lg text-neutral-200 hover:text-neutral-100 hover:cursor-pointer data-[state=active]:text-neutral-100 data-[state=active]:font-bold data-[state=active]:border-b-2 data-[state=active]:border-greenish-500';
@@ -13,10 +17,10 @@ export default function ProjectTabs() {
                     <Tabs.Trigger value="offseter" className={triggerClassName} >Offseter</Tabs.Trigger>
                 </div>
                 <div className='w-full'>
-                    <Tabs.Content value="project" className={conteantClassName}>Project</Tabs.Content>
-                    <Tabs.Content value="minter" className={conteantClassName}>Minter</Tabs.Content>
-                    <Tabs.Content value="yielder" className={conteantClassName}>Yielder</Tabs.Content>
-                    <Tabs.Content value="offseter" className={conteantClassName}>Offseter</Tabs.Content>
+                    <Tabs.Content value="project" className={conteantClassName}><Project /></Tabs.Content>
+                    <Tabs.Content value="minter" className={conteantClassName}><Minter /></Tabs.Content>
+                    <Tabs.Content value="yielder" className={conteantClassName}><Yielder /></Tabs.Content>
+                    <Tabs.Content value="offseter" className={conteantClassName}><Offseter /></Tabs.Content>
                 </div>
             </Tabs.List>
         </Tabs.Root>
