@@ -2,16 +2,16 @@ import { useContractRead } from "@starknet-react/core";
 import { createContext, useContext, useEffect, useState } from "react";
 import { shortString } from "starknet";
 import { type SlotURI } from "~/types/slotURI";
-import { useProjectAbi } from "./ProjectAbiWrapper";
+import { useProjectAbis } from "./ProjectAbisWrapper";
 
 const SlotURIContext = createContext<SlotURI>({} as SlotURI);
 export default function SlotURIWrapper({ children, slot, projectAddress }: { children: React.ReactNode, slot: string, projectAddress: string }) {
     const [slotUri, setSlotUri] = useState<SlotURI|undefined>(undefined);
-    const { abi } = useProjectAbi();
+    const { projectAbi } = useProjectAbis();
 
     const { data, isLoading, error } = useContractRead({
         address: projectAddress,
-        abi,
+        abi: projectAbi,
         functionName: 'slot_uri',
         args: [parseInt(slot)],
         parseResult: false
@@ -31,7 +31,7 @@ export default function SlotURIWrapper({ children, slot, projectAddress }: { chi
 
     if (isLoading || slotUri === undefined) {
         return (
-            <div>Loading...</div>
+            <div>Loading slot_uri...</div>
         )
     }
 

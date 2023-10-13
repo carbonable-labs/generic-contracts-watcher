@@ -1,15 +1,16 @@
+
+import { Title } from "../common/Title";
 import { useSlotURI } from "./SlotURI";
 
-export default function ProjectAttributes() {
+export default function ProjectMetadata() {
     const slotURI = useSlotURI();
-
-    console.log(slotURI)
 
     return (
         <>
-            <div className="text-xl font-bold uppercase mt-2">
-                Project Attributes
-            </div>
+            <Title
+                title="Project Metadata"
+                icon="👀"
+            />
             <div className="flex items-start justify-start w-full flex-wrap mt-4">
                 {slotURI.attributes.map((attribute, index) => {
                     return (
