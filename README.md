@@ -49,7 +49,7 @@ pnpm start
 
 Now you'll need to pick a host to deploy it to.
 
-## Environment Variables
+## .env
 ```sh
 NETWORK=testnet|mainnet
 RPC=""

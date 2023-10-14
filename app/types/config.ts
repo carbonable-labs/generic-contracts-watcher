@@ -9,3 +9,5 @@ export type Project = {
     yielder: string;
     offseter: string;
 }
+
+export const DECIMALS = 6;

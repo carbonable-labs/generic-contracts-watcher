@@ -1,3 +1,4 @@
+import LinkComponent from "../common/LinkComponent";
 import { useSlotURI } from "./SlotURI";
 
 export default function ProjectInfo({slot}: {slot: string}) {
@@ -20,14 +21,5 @@ export default function ProjectInfo({slot}: {slot: string}) {
                 <LinkComponent href={slotURI.banner_image_url} title="Banner Image URL" />
             </div>
         </>
-    )
-}
-
-function LinkComponent({ href, title }: { href: string, title: string }) {
-    return (
-        <div className="text-ellipsis overflow-hidden">
-            <span>{title}: </span>
-            <a href={href} target="_blank" rel="noreferrer" className="text-neutral-300 hover:text-neutral-200">{href}</a>
-        </div>
     )
 }

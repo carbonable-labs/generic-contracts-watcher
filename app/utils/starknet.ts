@@ -3,3 +3,7 @@ export async function fetchAbi(provider: any, address: string) {
     return result.abi;
 }
 
+export function bigIntToNumber(value: bigint) {
+    return parseFloat(value.toString());
+}
+

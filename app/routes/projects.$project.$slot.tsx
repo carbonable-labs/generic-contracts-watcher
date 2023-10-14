@@ -1,10 +1,11 @@
 import { type LoaderFunctionArgs, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import ProjectImage from "~/components/project/ProjectImage";
-import ProjectAbiWrapper from "~/components/project/ProjectAbiWrapper";
+import ProjectAbisWrapper from "~/components/project/ProjectAbisWrapper";
 import SlotURIWrapper from "~/components/project/SlotURI";
 import ProjectInfo from "~/components/project/ProjectInfo";
-import ProjectAttributes from "~/components/project/ProjectAttributes";
+import ProjectMetadata from "~/components/project/ProjectMetadata";
+import { Title } from "~/components/common/Title";
 import ProjectTabs from "~/components/project/ProjectTabs";
 
 export async function loader({params}: LoaderFunctionArgs) {
@@ -16,7 +17,7 @@ export default function Index() {
 
     return (
         <>  
-            <ProjectAbiWrapper 
+            <ProjectAbisWrapper 
                 key={`abi_${slot}`} 
                 projectAddress={project_address}
             >
@@ -31,18 +32,19 @@ export default function Index() {
                         <div className="w-full md:w-2/3 md:px-8 mt-4 md:mt-0">
                             <ProjectInfo slot={slot} />
                         </div>
-                        <div className="w-full mt-4 ml-1">
-                            <ProjectAttributes />
+                        <div className="w-full ml-1">
+                            <ProjectMetadata />
                         </div>
                     </div>
                 </SlotURIWrapper>
                 <div className="w-full">
-                    <div className="text-xl font-bold uppercase mt-8">
-                        Contracts analytics
-                    </div>
-                    <ProjectTabs />
+                    <Title
+                        title="Contracts data"
+                        icon="🪪"
+                     />
+                     <ProjectTabs />
                 </div>
-            </ProjectAbiWrapper>
+            </ProjectAbisWrapper>
         </>
     );
 }
