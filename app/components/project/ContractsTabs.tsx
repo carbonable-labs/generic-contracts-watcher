@@ -4,7 +4,7 @@ import Sale from './attributes/Sale';
 import Yield from './attributes/Yield';
 import Offset from './attributes/Offset';
 
-export default function ProjectTabs() {
+export default function ContractsTabs() {
     const triggerClassName = 'px-6 py-3 flex-1 flex items-center justify-start text-lg text-neutral-200 border-b-[1px] border-opacityLight-5 hover:text-neutral-100 hover:cursor-pointer data-[state=active]:text-neutral-100 data-[state=active]:font-bold data-[state=active]:border-b-2 data-[state=active]:border-greenish-500';
     const contentClassName = 'grow py-6 outline-none w-full';
     return (

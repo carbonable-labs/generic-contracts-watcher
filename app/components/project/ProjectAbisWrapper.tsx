@@ -13,11 +13,12 @@ type ProjectAbiContextType = {
     minterAddress?: string,
     yielderAddress?: string,
     offseterAddress?: string
+    slot: string
 }
 
 const ProjectAbiContext = createContext<ProjectAbiContextType>({} as ProjectAbiContextType);
 
-export default function ProjectAbisWrapper({ children, projectAddress }: { children: React.ReactNode, projectAddress: string }) {
+export default function ProjectAbisWrapper({ children, projectAddress, slot }: { children: React.ReactNode, projectAddress: string, slot: string }) {
     const { provider } = useProvider();
     const { projects } = useConfig();
 
@@ -77,7 +78,7 @@ export default function ProjectAbisWrapper({ children, projectAddress }: { child
 
     return (
         <ProjectAbiContext.Provider 
-            value={{ projectAbi, minterAbi, yielderAbi, offseterAbi, projectAddress, minterAddress, yielderAddress, offseterAddress }}
+            value={{ projectAbi, minterAbi, yielderAbi, offseterAbi, projectAddress, minterAddress, yielderAddress, offseterAddress, slot }}
         >
             { children }
         </ProjectAbiContext.Provider>

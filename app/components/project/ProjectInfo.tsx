@@ -1,7 +1,9 @@
 import LinkComponent from "../common/LinkComponent";
+import { useProjectAbis } from "./ProjectAbisWrapper";
 import { useSlotURI } from "./SlotURI";
 
-export default function ProjectInfo({slot}: {slot: string}) {
+export default function ProjectInfo() {
+    const { slot } = useProjectAbis();
     const slotURI = useSlotURI();
 
     return (
