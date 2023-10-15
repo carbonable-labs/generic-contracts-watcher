@@ -1,5 +1,6 @@
 import { useProjectAbis } from "../ProjectAbisWrapper";
 import AbsorptionCurve from "./AbsorptionCurve";
+import SellPricesCurve from "./SellPriceCurve";
 
 export default function FarmingYield() {
     const { projectAbi, yielderAbi } = useProjectAbis();
@@ -13,6 +14,7 @@ export default function FarmingYield() {
     return (
         <>
             <AbsorptionCurve />
+            <SellPricesCurve />
         </>
     )
 }
