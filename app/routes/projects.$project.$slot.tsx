@@ -6,7 +6,8 @@ import SlotURIWrapper from "~/components/project/SlotURI";
 import ProjectInfo from "~/components/project/ProjectInfo";
 import ProjectMetadata from "~/components/project/ProjectMetadata";
 import { Title } from "~/components/common/Title";
-import ProjectTabs from "~/components/project/ProjectTabs";
+import ContractsTabs from "~/components/project/ContractsTabs";
+import Analytics from "~/components/project/Analytics";
 
 export async function loader({params}: LoaderFunctionArgs) {
     return json({ project_address: params.project, slot: params.slot });
@@ -20,17 +21,15 @@ export default function Index() {
             <ProjectAbisWrapper 
                 key={`abi_${slot}`} 
                 projectAddress={project_address}
+                slot={slot}
             >
-                <SlotURIWrapper
-                    slot={slot} 
-                    projectAddress={project_address}
-                >
+                <SlotURIWrapper>
                     <div className="w-full flex flex-wrap">
                         <div className="w-full md:w-1/3">
                             <ProjectImage />
                         </div>
                         <div className="w-full md:w-2/3 md:px-8 mt-4 md:mt-0">
-                            <ProjectInfo slot={slot} />
+                            <ProjectInfo />
                         </div>
                         <div className="w-full ml-1">
                             <ProjectMetadata />
@@ -39,10 +38,17 @@ export default function Index() {
                 </SlotURIWrapper>
                 <div className="w-full">
                     <Title
-                        title="Contracts data"
+                        title="Contracts information"
                         icon="🪪"
                      />
-                     <ProjectTabs />
+                     <ContractsTabs />
+                </div>
+                <div className="w-full">
+                    <Title
+                        title="Contracts analytics"
+                        icon="📊"
+                     />
+                     <Analytics />
                 </div>
             </ProjectAbisWrapper>
         </>

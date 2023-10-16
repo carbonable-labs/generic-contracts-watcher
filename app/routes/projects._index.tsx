@@ -15,12 +15,10 @@ export default function Index() {
                     <ProjectAbisWrapper 
                         key={`abi_${project.slot}`} 
                         projectAddress={project.project}
+                        slot={project.slot}
                     >
                         <Link to={`/projects/${project.project}/${project.slot}`} className="hover:brightness-110">
-                            <SlotURIWrapper
-                                slot={project.slot} 
-                                projectAddress={project.project}
-                            >
+                            <SlotURIWrapper>
                                 <ProjectImage />
                             </SlotURIWrapper>
                         </Link>

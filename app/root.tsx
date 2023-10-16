@@ -28,6 +28,9 @@ export const loader: LoaderFunction = async () => {
 export default function App() {
   const { defautlNetwork } = useLoaderData();
   const config = useMemo(() => configFile, []);
+  const projects = config.projects;
+
+  const voyagerContractURL = defautlNetwork === 'mainnet' ? 'https://voyager.online/contract/' : 'https://goerli.voyager.online/contract/'
 
   return (
     <html lang="en">
@@ -47,7 +50,7 @@ export default function App() {
           </header>
           <main className="px-4 py-8 md:px-8 mt-[80px] relative w-screen mx-auto 2xl:max-w-6xl font-inter">
             <Back />
-            <Outlet context={ config } />
+            <Outlet context={{ projects, voyagerContractURL }} />
           </main>
           <ScrollRestoration />
           <Scripts />
