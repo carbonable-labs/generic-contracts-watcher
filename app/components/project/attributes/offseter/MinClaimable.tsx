@@ -2,6 +2,7 @@ import { useContractRead } from "@starknet-react/core";
 import { useProjectAbis } from "../../ProjectAbisWrapper";
 import LabelComponent from "~/components/common/LabelComponent";
 import { bigIntToNumber } from "~/utils/starknet";
+import { DECIMALS } from "~/types/config";
 
 export default function MinClaimable() {
     const { offseterAbi, offseterAddress } = useProjectAbis();
@@ -26,7 +27,7 @@ export default function MinClaimable() {
     return (
         <LabelComponent
             title="Min claimable"
-            value={`t${(bigIntToNumber(data)).toString()}`}
+            value={`t${((bigIntToNumber(data)) * Math.pow(10, -DECIMALS)).toString()}`}
 
         />
     )

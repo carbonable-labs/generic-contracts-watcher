@@ -11,9 +11,9 @@ export default function Index() {
         <>
             <h1 className="text-2xl uppercase font-bold">Projects</h1>
             <div className="mt-4 w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                {projects.map((project) => (
+                {projects.map((project, index) => (
                     <ProjectAbisWrapper 
-                        key={`abi_${project.slot}`} 
+                        key={`abi_${project.slot}_${index}`} 
                         projectAddress={project.project}
                         slot={project.slot}
                     >
