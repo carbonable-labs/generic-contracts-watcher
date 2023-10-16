@@ -1,27 +1,33 @@
-import LabelComponent from "~/components/common/LabelComponent";
 import { useProjectAbis } from "../ProjectAbisWrapper";
+import { useConfig } from "~/root";
+import { ContractLinkComponent } from "~/components/common/LinkComponent";
 
 export default function Addresses() {
     const { projectAddress, minterAddress, yielderAddress, offseterAddress } = useProjectAbis();
+    const { voyagerContractURL } = useConfig();
 
     return (
         <>
-            <LabelComponent
+            <ContractLinkComponent
                 title="Project adddress"
-                value={projectAddress}
+                address={projectAddress}
+                href={voyagerContractURL + projectAddress}
             />
-            <LabelComponent
+            { minterAddress && <ContractLinkComponent
                 title="Minter address"
-                value={minterAddress}
-            />
-            <LabelComponent
+                address={minterAddress}
+                href={voyagerContractURL + minterAddress}
+            />}
+            { yielderAddress && <ContractLinkComponent
                 title="Yielder address"
-                value={yielderAddress}
-            />
-            <LabelComponent
+                address={yielderAddress}
+                href={voyagerContractURL + yielderAddress}
+            />}
+            { offseterAddress && <ContractLinkComponent
                 title="Offseter address"
-                value={offseterAddress}
-            />
+                address={offseterAddress}
+                href={voyagerContractURL + offseterAddress}
+            />}
         </>
     )
 }

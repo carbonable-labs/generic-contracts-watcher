@@ -26,7 +26,7 @@ export default function MaxValue() {
 
     return (
         <LabelComponent
-            title="Reserved value"
+            title="Max value"
             value={(bigIntToNumber(data) * Math.pow(10, -DECIMALS)).toString()}
 
         />

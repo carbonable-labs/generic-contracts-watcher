@@ -7,7 +7,7 @@ import ProjectInfo from "~/components/project/ProjectInfo";
 import ProjectMetadata from "~/components/project/ProjectMetadata";
 import { Title } from "~/components/common/Title";
 import ContractsTabs from "~/components/project/ContractsTabs";
-import AnalyticsTabs from "~/components/project/AnalyticsTabs";
+import Analytics from "~/components/project/Analytics";
 
 export async function loader({params}: LoaderFunctionArgs) {
     return json({ project_address: params.project, slot: params.slot });
@@ -48,7 +48,7 @@ export default function Index() {
                         title="Contracts analytics"
                         icon="📊"
                      />
-                     <AnalyticsTabs />
+                     <Analytics />
                 </div>
             </ProjectAbisWrapper>
         </>

@@ -6,4 +6,3 @@ export async function fetchAbi(provider: any, address: string) {
 export function bigIntToNumber(value: bigint) {
     return parseFloat(value.toString());
 }
-

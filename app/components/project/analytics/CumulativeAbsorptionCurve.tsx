@@ -3,23 +3,25 @@ import { useEffect, useState } from "react";
 import { Area, AreaChart, Label, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Subtitle } from "~/components/common/Title";
 import { useProjectAbis } from "../ProjectAbisWrapper";
-import { shortString } from "starknet";
+import { DECIMALS } from "~/types/config";
 
-export default function SellPricesCurve() {
-    const { yielderAbi, yielderAddress } = useProjectAbis();
+export default function CumulativeAbsorptionCurve() {
+    const { projectAddress, projectAbi, slot } = useProjectAbis();
     const [graphData, setGraphData] = useState([{}]);
 
-    const { data: sellPriceData, isLoading: isLoadingSellPrices, error: errorSellPrices } = useContractRead({
-        address: yielderAddress,
-        abi: yielderAbi,
-        functionName: 'get_prices',
+    const { data: absorptionsData, isLoading: isLoadingAbsorptions, error: errorAbsorptions } = useContractRead({
+        address: projectAddress,
+        abi: projectAbi,
+        functionName: 'get_absorptions',
+        args: [parseInt(slot)],
         parseResult: false
     });
 
     const { data: timesData, isLoading: isLoadingTimes, error: errorTimes } = useContractRead({
-        address: yielderAddress,
-        abi: yielderAbi,
-        functionName: 'get_price_times',
+        address: projectAddress,
+        abi: projectAbi,
+        functionName: 'get_times',
+        args: [parseInt(slot)],
         parseResult: false
     });
 
@@ -28,7 +30,7 @@ export default function SellPricesCurve() {
             return (
                 <div className="px-8 pt-4 pb-4 bg-neutral-700/90 border border-neutral-500 font-inter rounded-xl">
                     <p className="text-center uppercase bold text-neutral-100">{label}</p>
-                    <p className="text-left text-blue-dark mt-2">Sell price: ${payload[0].value}</p>
+                    <p className="text-left text-greenish-500 mt-2">Absorption: t{payload[0].value}</p>
                 </div>
             );
         }
@@ -37,32 +39,29 @@ export default function SellPricesCurve() {
     };
 
     useEffect(() => {
-        if (sellPriceData === undefined || timesData === undefined) { return; }
+        if (absorptionsData === undefined || timesData === undefined) { return; }
 
-        const sellPrices = (sellPriceData as Array<string>).slice(1);
+        const absorptions = (absorptionsData as Array<string>).slice(1);
         const times = (timesData as Array<string>).slice(1);
 
-        sellPrices.map(shortString.decodeShortString).join('');
-        const filteredSellPrices = sellPrices.filter(price => price !== '0x0');
-
-        const data = times.map((time, i) => {
+        const data = absorptions.map((absorption, i) => {
             return {
-                year: new Date(Number(time) * 1000).toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }),
-                sellPrices: Number(filteredSellPrices[i])
+                year: new Date(Number(times[i]) * 1000).toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+                absorption: Number(absorption) * Math.pow(10, -DECIMALS)
             }
         });
 
         setGraphData(data);
-    }, [sellPriceData, timesData]);
+    }, [absorptionsData, timesData]);
 
 
-    if (isLoadingSellPrices || isLoadingTimes) {
+    if (isLoadingAbsorptions || isLoadingTimes) {
         return (
             <div>Loading absorption curve...</div>
         )
     }
 
-    if (errorSellPrices || errorTimes) {
+    if (errorAbsorptions || errorTimes) {
         return (
             <div>Error loading absorption curve...</div>
         )
@@ -70,7 +69,7 @@ export default function SellPricesCurve() {
 
     return (
         <>
-            <Subtitle title="Sell Price Curve" />
+            <Subtitle title="Cumulative Absorption Curve" />
             <div className="w-full min-h-[400px]">
                 <ResponsiveContainer width="100%" height="100%" minHeight='400px'>
                     <AreaChart 
@@ -84,18 +83,18 @@ export default function SellPricesCurve() {
                         }}
                     >
                         <defs>
-                            <linearGradient id="colorSellPrice" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#334566" stopOpacity={0.8}/>
-                                <stop offset="95%" stopColor="#334566" stopOpacity={0}/>
+                            <linearGradient id="colorAbsorptionCurve" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#22875B" stopOpacity={0.8}/>
+                                <stop offset="95%" stopColor="#22875B" stopOpacity={0}/>
                             </linearGradient>
                         </defs>
                         <XAxis dataKey="year">
                             <Label value="Date" offset={-4} position="insideBottom" style={{ textAnchor: 'middle', fontSize: '100%', fill: '#878A94' }} />
                         </XAxis>
                         <YAxis>
-                            <Label value="Sell Price ($)" offset={-2}  angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fontSize: '100%', fill: '#878A94' }} />
+                            <Label value="Absorption (t)" offset={-2}  angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fontSize: '100%', fill: '#878A94' }} />
                         </YAxis>
-                        <Area name="Sell Price Curve" type="monotone" dataKey="sellPrices" fill={'url(#colorSellPrice)'} stroke={'#334566'} dot={false} activeDot={true} />
+                        <Area name="Absorption curve" type="monotone" dataKey="absorption" fill={'url(#colorAbsorptionCurve)'} stroke={'#22875B'} dot={false} activeDot={true} />
                         <Tooltip content={<CustomTooltip />} wrapperStyle={{ outline: "none" }} />
                     </AreaChart>
                 </ResponsiveContainer>

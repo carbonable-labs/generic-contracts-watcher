@@ -4,22 +4,23 @@ import { Area, AreaChart, Label, ResponsiveContainer, Tooltip, XAxis, YAxis } fr
 import { Subtitle } from "~/components/common/Title";
 import { useProjectAbis } from "../ProjectAbisWrapper";
 import { shortString } from "starknet";
+import { DECIMALS } from "~/types/config";
 
-export default function SellPricesCurve() {
+export default function CumulativeSaleCurve() {
     const { yielderAbi, yielderAddress } = useProjectAbis();
     const [graphData, setGraphData] = useState([{}]);
 
-    const { data: sellPriceData, isLoading: isLoadingSellPrices, error: errorSellPrices } = useContractRead({
+    const { data: cumSaleData, isLoading: isLoadingCumSale, error: errorCumSale } = useContractRead({
         address: yielderAddress,
         abi: yielderAbi,
-        functionName: 'get_prices',
+        functionName: 'get_cumsales',
         parseResult: false
     });
 
-    const { data: timesData, isLoading: isLoadingTimes, error: errorTimes } = useContractRead({
+    const { data: cumSaleTimesData, isLoading: isLoadingTimes, error: errorTimes } = useContractRead({
         address: yielderAddress,
         abi: yielderAbi,
-        functionName: 'get_price_times',
+        functionName: 'get_cumsale_times',
         parseResult: false
     });
 
@@ -28,7 +29,7 @@ export default function SellPricesCurve() {
             return (
                 <div className="px-8 pt-4 pb-4 bg-neutral-700/90 border border-neutral-500 font-inter rounded-xl">
                     <p className="text-center uppercase bold text-neutral-100">{label}</p>
-                    <p className="text-left text-blue-dark mt-2">Sell price: ${payload[0].value}</p>
+                    <p className="text-left text-blue-dark mt-2">Cumulative sale: ${payload[0].value}</p>
                 </div>
             );
         }
@@ -37,32 +38,31 @@ export default function SellPricesCurve() {
     };
 
     useEffect(() => {
-        if (sellPriceData === undefined || timesData === undefined) { return; }
+        if (cumSaleTimesData === undefined || cumSaleData === undefined) { return; }
 
-        const sellPrices = (sellPriceData as Array<string>).slice(1);
-        const times = (timesData as Array<string>).slice(1);
+        const cumSale = (cumSaleData as Array<string>).slice(1);
+        const times = (cumSaleTimesData as Array<string>).slice(1);
 
-        sellPrices.map(shortString.decodeShortString).join('');
-        const filteredSellPrices = sellPrices.filter(price => price !== '0x0');
+        cumSale.map(shortString.decodeShortString).join('');
+        const filteredCumSale = cumSale.filter((price, i) => price !== '0x0' || i === 0);
 
         const data = times.map((time, i) => {
             return {
                 year: new Date(Number(time) * 1000).toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }),
-                sellPrices: Number(filteredSellPrices[i])
+                cumSale: Number(filteredCumSale[i]) * Math.pow(10, -DECIMALS)
             }
         });
-
         setGraphData(data);
-    }, [sellPriceData, timesData]);
+    }, [cumSaleTimesData, cumSaleData]);
 
 
-    if (isLoadingSellPrices || isLoadingTimes) {
+    if (isLoadingTimes || isLoadingCumSale) {
         return (
             <div>Loading absorption curve...</div>
         )
     }
 
-    if (errorSellPrices || errorTimes) {
+    if (errorTimes || errorCumSale) {
         return (
             <div>Error loading absorption curve...</div>
         )
@@ -70,10 +70,10 @@ export default function SellPricesCurve() {
 
     return (
         <>
-            <Subtitle title="Sell Price Curve" />
+            <Subtitle title="Cumulative Sale Curve" />
             <div className="w-full min-h-[400px]">
                 <ResponsiveContainer width="100%" height="100%" minHeight='400px'>
-                    <AreaChart 
+                    <AreaChart
                         width={1000}
                         height={3000}
                         data={graphData}
@@ -84,7 +84,7 @@ export default function SellPricesCurve() {
                         }}
                     >
                         <defs>
-                            <linearGradient id="colorSellPrice" x1="0" y1="0" x2="0" y2="1">
+                            <linearGradient id="colorCumSalePrice" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="5%" stopColor="#334566" stopOpacity={0.8}/>
                                 <stop offset="95%" stopColor="#334566" stopOpacity={0}/>
                             </linearGradient>
@@ -95,7 +95,7 @@ export default function SellPricesCurve() {
                         <YAxis>
                             <Label value="Sell Price ($)" offset={-2}  angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fontSize: '100%', fill: '#878A94' }} />
                         </YAxis>
-                        <Area name="Sell Price Curve" type="monotone" dataKey="sellPrices" fill={'url(#colorSellPrice)'} stroke={'#334566'} dot={false} activeDot={true} />
+                        <Area name="Cumulative Sale curve" type="monotone" dataKey="cumSale" fill={'url(#colorCumSalePrice)'} stroke={'#334566'} dot={false} activeDot={true} />
                         <Tooltip content={<CustomTooltip />} wrapperStyle={{ outline: "none" }} />
                     </AreaChart>
                 </ResponsiveContainer>
