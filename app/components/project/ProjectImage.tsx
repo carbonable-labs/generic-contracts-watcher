@@ -15,9 +15,9 @@ export default function ProjectImage() {
             const prefix = containerId + '_';
 
             // Dev only remove the first child because of strict mode double rendering
-            if (svgToDisplay.children().length > 1) { 
+            if (svgToDisplay.children().length > 1) {
                 svgToDisplay.children()[0].remove();
-             }
+            }
 
             svgToDisplay.find('[id]').each((element) => {
                 element.id(prefix + element.id());
@@ -33,18 +33,23 @@ export default function ProjectImage() {
 
             svgToDisplay.find('[filter]').each((element) => {
                 const currentFilter = element.attr('filter');
-                element.attr('filter',  currentFilter.replace('url(#', 'url(#' + prefix));
+                element.attr('filter', currentFilter.replace('url(#', 'url(#' + prefix));
             });
 
             svgToDisplay.find('[clip-path]').each((element) => {
                 const currentClipPath = element.attr('clip-path');
-                element.attr('clip-path',  currentClipPath.replace('url(#', 'url(#' + prefix));
+                element.attr('clip-path', currentClipPath.replace('url(#', 'url(#' + prefix));
+            });
+
+            svgToDisplay.find('[mask]').each((element) => {
+                const currentMask = element.attr('mask');
+                element.attr('mask', currentMask.replace('url(#', 'url(#' + prefix));
             });
 
             svgToDisplay.find('[href]').each((element) => {
                 const currentHref = element.attr('href');
                 if (currentHref.startsWith('#')) {
-                    element.attr('href',  currentHref.replace('#', '#' + prefix));
+                    element.attr('href', currentHref.replace('#', '#' + prefix));
                 }
             });
         }
