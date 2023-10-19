@@ -1,4 +1,4 @@
-export function Title({ title, icon }: { title: string, icon: string }) {
+export function Title({ title, icon }: { title: string, icon?: string }) {
     return (
         <div className="text-xl font-bold uppercase mt-12 pb-4 border-b border-neutral-600">
             {icon} {title}
