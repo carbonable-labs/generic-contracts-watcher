@@ -12,8 +12,10 @@ import {
 import styles from "./tailwind.css";
 import { StarknetProvider } from "./components/starknet/StarknetProvider";
 import Header from "./components/menu/Header";
-import type { Config } from "./types/config";
 import Back from "./components/common/Back";
+import type { Config } from "./types/config";
+import { useState } from "react";
+import type { Abi } from "starknet";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
@@ -25,8 +27,13 @@ export const loader: LoaderFunction = async () => {
 
 export default function App() {
   const { defautlNetwork } = useLoaderData();
-
-  const voyagerContractURL = defautlNetwork === 'mainnet' ? 'https://voyager.online/contract/' : 'https://goerli.voyager.online/contract/'
+  const [contractAddress, setContractAddress] = useState<string>("");
+  const [abi, setAbi] = useState<Abi|undefined>(undefined);
+  const [viewFunctions, setViewFunctions] = useState([]);
+  const [abiFunctions, setAbiFunctions] = useState([]);
+  const [isProxy, setIsProxy] = useState<boolean>(false);
+  const [implementationAddress, setImplementationAddress] = useState<string>("");
+  const [isImplementationClass, setIsImplementationClass] = useState<boolean>(false);
 
   return (
     <html lang="en">
@@ -46,7 +53,24 @@ export default function App() {
           </header>
           <main className="px-4 py-8 md:px-8 mt-[80px] relative w-screen mx-auto 2xl:max-w-6xl font-inter">
             <Back />
-            <Outlet context={{ voyagerContractURL }} />
+            <Outlet context={{ 
+              contractAddress,
+              setContractAddress,
+              abi,
+              setAbi,
+              defautlNetwork,
+              viewFunctions,
+              setViewFunctions,
+              isProxy,
+              setIsProxy,
+              implementationAddress,
+              setImplementationAddress,
+              abiFunctions,
+              setAbiFunctions,
+              isImplementationClass,
+              setIsImplementationClass
+              }} 
+            />
           </main>
           <ScrollRestoration />
           <Scripts />

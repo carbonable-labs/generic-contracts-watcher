@@ -1,6 +1,6 @@
 # Contracts Watcher
 
-Contracts Watcher is a project built on [Remix.run](https://remix.run/) that aims to monitor the state of the Carbonable smart contract on the blockchain. It provides a convenient way to keep track of the contract's activities and ensures its integrity.
+Contracts Watcher is a project built on [Remix.run](https://remix.run/) that aims to monitor the state of the Starknet smart contracts on the blockchain. It provides a convenient way to keep track of the contract's activities and ensures its integrity.
 
 ## Table of Contents
 
