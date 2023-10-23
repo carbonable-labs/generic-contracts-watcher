@@ -11,11 +11,12 @@ import { Contract, num } from "starknet";
 
 export default function SearchBar() {
     const { provider } = useProvider();
-    const { contractAddress, setContractAddress, abi, setAbi, defautlNetwork, setViewFunctions, setIsProxy, setImplementationAddress, setAbiFunctions, setIsImplementationClass } = useConfig();
+    const { setContractAddress, abi, setAbi, defautlNetwork, setViewFunctions, setIsProxy, setImplementationAddress, setAbiFunctions, setIsImplementationClass } = useConfig();
     const [isContractAddressValid, setIsContractAddressValid] = useState<boolean>(true);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [displayResult, setDisplayResult] = useState<boolean>(false);
     const [resultText, setResultText] = useState<string>("");
+    const [userContractAddress, setUserContractAddress] = useState<string>("");
 
     const stopLoading = (abi: Abi|undefined, resultText: string) => {
         setIsLoading(false);
@@ -25,10 +26,12 @@ export default function SearchBar() {
     }
 
     const handleClick = async () => {
+        // Check if the contract address is valid
         const regex = new RegExp(/^0x[0-9a-fA-F]{64}$/);
-        setIsContractAddressValid(regex.test(contractAddress));
-        if (!regex.test(contractAddress)) { return; }
+        setIsContractAddressValid(regex.test(userContractAddress));
+        if (!regex.test(userContractAddress)) { return; }
 
+        // Reset the state
         setDisplayResult(false);
         setIsLoading(true);
         setAbi(undefined);
@@ -36,14 +39,17 @@ export default function SearchBar() {
         setViewFunctions([]);
         setImplementationAddress("");
         setIsImplementationClass(false);
+        setContractAddress(userContractAddress);
 
-        const {abiResult, isImplementationClass} = await fetchAbi(provider, contractAddress);
+        // Fetch the ABI
+        const {abiResult, isImplementationClass} = await fetchAbi(provider, userContractAddress);
 
         if (abiResult === undefined) {
             stopLoading(undefined, "Contract not found");
             return;
         }
 
+        // Check if the contract is a proxy
         const isProxy = abiResult.some((func: any) => (func.name === '__default__'));
         setIsProxy(isProxy);
         setIsImplementationClass(isImplementationClass);
@@ -53,23 +59,31 @@ export default function SearchBar() {
             return;
         }
 
-        const proxyContract = new Contract(abiResult, contractAddress, provider);
-        const canGetImplementation = proxyContract.functions.hasOwnProperty("get_implementation");
+        // If the contract is a proxy, fetch the implementation address
+        const proxyContract = new Contract(abiResult, userContractAddress, provider);
+        const possibleImplementationFunctionNames = ["implementation", "getImplementation", "get_implementation"];
+        const matchingFunctionName = possibleImplementationFunctionNames.find(name => proxyContract[name] && typeof proxyContract[name] === "function");
 
-        if (!canGetImplementation) {
+        if (matchingFunctionName === undefined) {
             stopLoading(undefined, "No implementation found for this proxy contract");
             return;
         }
 
-        const { implementation: implementationAddress } = await proxyContract.get_implementation();
-        setImplementationAddress(num.toHex(implementationAddress));
-        const compiledEContract = await provider.getClassByHash(num.toHex(implementationAddress));
+        const { implementation, address } = await proxyContract[matchingFunctionName]();
+        const implementationAddress = address === undefined ? num.toHex(implementation) : num.toHex(address);
+        setImplementationAddress(implementationAddress);
 
-        stopLoading(compiledEContract.abi, "");
+        try {
+            const compiledContract = address === undefined ? await provider.getClassByHash(implementationAddress) : await provider.getClassAt(implementationAddress);
+            stopLoading(compiledContract.abi, "");
+        } catch { 
+            stopLoading(undefined, "No implementation found for this proxy contract");
+            return;
+        }
     }
 
     const handleChange = (e: any) => {
-        setContractAddress(e.target.value);
+        setUserContractAddress(e.target.value);
         setIsContractAddressValid(true);
     }
 

@@ -16,7 +16,8 @@ export async function action({request}: ActionFunctionArgs) {
             'x-apikey': rpcApiKey
         },
         body: JSON.stringify(body)
-    })
-
-    return await res.json();
+    });
+    
+    const json = await res.json();
+    return json;
 }

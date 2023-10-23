@@ -18,15 +18,15 @@ export default function ERC721() {
 }
 
 function ERC721Component({ supportsInterfaceFunction }: { supportsInterfaceFunction: any }) {
-    const { implementationAddress, contractAddress, abi } = useConfig();
+    const { contractAddress, abi } = useConfig();
     const { data, isLoading, error } = useContractRead({
-        address: implementationAddress === "" ? contractAddress : implementationAddress,
+        address: contractAddress,
         abi,
         functionName: supportsInterfaceFunction.name,
         args: [IERC721_ID],
     });
 
-    if (isLoading || error || data === false) {
+    if (isLoading || error || data === false || (data as any).success === 0n) {
         return null;
     }
 
