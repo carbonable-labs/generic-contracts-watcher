@@ -43,3 +43,17 @@ export const ERC721_METADATA_DEFAULT_VIEW_FUNCTIONS = ["name", "symbol", "tokenU
 export const ERC721_METADATA_DEFAULT_WRITE_FUNCTIONS = [];
 export const ACCOUNT_DEFAULT_VIEW_FUNCTIONS = [];
 export const ACCOUNT_DEFAULT_WRITE_FUNCTIONS = ["__validate__", "__execute__"];
+
+
+export const contractRegex = /^0x[0-9a-fA-F]{62,64}$/;
+
+declare global {
+    interface BigInt {
+        /** Convert to BigInt to string form in JSON.stringify */
+        toJSON: () => string;
+    }
+}
+
+BigInt.prototype.toJSON = function () {
+    return this.toString();
+};

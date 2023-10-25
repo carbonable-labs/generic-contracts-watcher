@@ -9,6 +9,7 @@ import ErrorMessage from "./ErrorMessage";
 import type { Abi } from "starknet";
 import { Contract, num } from "starknet";
 import { ContractType } from "~/types/contract";
+import { contractRegex } from "~/types/config";
 
 export default function SearchBar() {
     const { provider } = useProvider();
@@ -28,9 +29,8 @@ export default function SearchBar() {
 
     const handleClick = async () => {
         // Check if the contract address is valid
-        const regex = new RegExp(/^0x[0-9a-fA-F]{64}$/);
-        setIsContractAddressValid(regex.test(userContractAddress));
-        if (!regex.test(userContractAddress)) { return; }
+        setIsContractAddressValid(contractRegex.test(userContractAddress));
+        if (!contractRegex.test(userContractAddress)) { return; }
 
         // Reset the state
         setDisplayResult(false);

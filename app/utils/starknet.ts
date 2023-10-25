@@ -1,5 +1,6 @@
 import type { Uint256 } from "starknet";
 import { num, shortString, uint256 } from "starknet";
+import { contractRegex } from "~/types/config";
 
 export async function fetchAbi(provider: any, address: string) {
   try {
@@ -52,8 +53,25 @@ export function formatData(data: any, output: any) {
     case "core::integer::u256":
       return num.isBigInt(value) ? value.toString() : uint256.uint256ToBN(value).toString() ;
     case "felt":
-      return shortString.decodeShortString(num.toHex(value));
+      if (typeof value === "object") {
+        return JSON.stringify(value, null, 2);
+      }
+      if (contractRegex.test(num.toHex(value))) {
+        return num.toHex(value);
+      }
+      if (num.isBigInt(value)) {
+        return value.toString();
+      }
+      if (shortString.isShortString(num.toHex(value))) {
+        return shortString.decodeShortString(num.toHex(value));
+      }
+
+      return "Not supported";
     case "core::felt252":
+      if (contractRegex.test(num.toHex(value))) {
+        return num.toHex(value);
+      }
+
       return shortString.decodeShortString(num.toHex(value));
     default:
       return "Not supported";
