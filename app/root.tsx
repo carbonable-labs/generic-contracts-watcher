@@ -16,6 +16,7 @@ import Back from "./components/common/Back";
 import type { Config } from "./types/config";
 import { useState } from "react";
 import type { Abi } from "starknet";
+import { ContractType } from "./types/contract";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
@@ -30,10 +31,12 @@ export default function App() {
   const [contractAddress, setContractAddress] = useState<string>("");
   const [abi, setAbi] = useState<Abi|undefined>(undefined);
   const [viewFunctions, setViewFunctions] = useState([]);
+  const [writeFunctions, setWriteFunctions] = useState([]);
   const [abiFunctions, setAbiFunctions] = useState([]);
   const [isProxy, setIsProxy] = useState<boolean>(false);
   const [implementationAddress, setImplementationAddress] = useState<string>("");
   const [isImplementationClass, setIsImplementationClass] = useState<boolean>(false);
+  const [contractTypes, setContractTypes] = useState<ContractType[]>([ContractType.UNKOWN]);
 
   return (
     <html lang="en">
@@ -61,6 +64,8 @@ export default function App() {
               defautlNetwork,
               viewFunctions,
               setViewFunctions,
+              writeFunctions,
+              setWriteFunctions,
               isProxy,
               setIsProxy,
               implementationAddress,
@@ -68,7 +73,9 @@ export default function App() {
               abiFunctions,
               setAbiFunctions,
               isImplementationClass,
-              setIsImplementationClass
+              setIsImplementationClass,
+              contractTypes,
+              setContractTypes
               }} 
             />
           </main>

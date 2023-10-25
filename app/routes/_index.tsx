@@ -1,7 +1,7 @@
 import type { MetaFunction } from "@remix-run/node";
 import ContractType from "~/components/contract/ContractType";
 import SearchBar from "~/components/search/SearchBar";
-import ContractFunctions from "~/components/contract/ContractFunctions";
+import DefaultContractFunctions from "~/components/contract/DefaultContractFunctions";
 import { useConfig } from "~/root";
 
 export const meta: MetaFunction = () => {
@@ -12,7 +12,7 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  const { abi } = useConfig();
+  const { abi, isImplementationClass } = useConfig();
 
   if (!abi) {
     return (
@@ -30,9 +30,13 @@ export default function Index() {
       <div className="mt-8 border border-neutral-600 rounded-xl p-4">
         <ContractType />
       </div>
-      <div className="mt-8 border border-neutral-600 rounded-xl p-4">
-        <ContractFunctions />
+      {isImplementationClass ? (
+        <div className="mt-8 border border-neutral-600 rounded-xl p-4">
+          Implementation class not supported yet
       </div>
+      ) : <>
+            <DefaultContractFunctions />
+      </>}
     </>
   );
 }

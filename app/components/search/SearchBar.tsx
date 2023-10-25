@@ -8,10 +8,11 @@ import { Subtitle } from "../common/Title";
 import ErrorMessage from "./ErrorMessage";
 import type { Abi } from "starknet";
 import { Contract, num } from "starknet";
+import { ContractType } from "~/types/contract";
 
 export default function SearchBar() {
     const { provider } = useProvider();
-    const { setContractAddress, abi, setAbi, defautlNetwork, setViewFunctions, setIsProxy, setImplementationAddress, setAbiFunctions, setIsImplementationClass } = useConfig();
+    const { setContractAddress, abi, setAbi, defautlNetwork, setViewFunctions, setWriteFunctions, setIsProxy, setImplementationAddress, setAbiFunctions, setIsImplementationClass, setContractTypes } = useConfig();
     const [isContractAddressValid, setIsContractAddressValid] = useState<boolean>(true);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [displayResult, setDisplayResult] = useState<boolean>(false);
@@ -40,12 +41,19 @@ export default function SearchBar() {
         setImplementationAddress("");
         setIsImplementationClass(false);
         setContractAddress(userContractAddress);
+        setContractTypes((prevContractTypes: ContractType[]) => [ContractType.UNKOWN]);
 
         // Fetch the ABI
         const {abiResult, isImplementationClass} = await fetchAbi(provider, userContractAddress);
 
         if (abiResult === undefined) {
             stopLoading(undefined, "Contract not found");
+            return;
+        }
+
+        if (isImplementationClass) {
+            setIsImplementationClass(isImplementationClass);
+            stopLoading(abiResult, "");
             return;
         }
 
@@ -105,7 +113,13 @@ export default function SearchBar() {
         };
     
         const extractedFunctions = extractFunctions(abi);
-        setViewFunctions(extractedFunctions.filter((func: any) => (func.state_mutability === 'view' || func.stateMutability === 'view')));
+        const views = extractedFunctions.filter((func: any) => (func.state_mutability === 'view' || func.stateMutability === 'view'));
+        const writes = extractedFunctions.filter((func: any) => {
+            return !views.some((viewFunc: any) => viewFunc.name === func.name);
+        });
+
+        setViewFunctions(views);
+        setWriteFunctions(writes);
         setAbiFunctions(extractedFunctions);
       }, [abi]);
 

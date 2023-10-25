@@ -4,7 +4,7 @@ import LabelComponent from "../common/LabelComponent";
 export default function ImplementationClassAddress() {
     const { implementationAddress } = useConfig();
 
-    if (implementationAddress === "") {
+    if (implementationAddress === "" ) {
         return null;
     }
     return (

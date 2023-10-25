@@ -1,7 +1,9 @@
 import { useContractRead } from "@starknet-react/core";
+import { useEffect } from "react";
 import Tag from "~/components/common/Tag";
 import { useConfig } from "~/root";
 import { IACCOUNT_ID } from "~/types/config";
+import { ContractType } from "~/types/contract";
 
 export default function ERC721() {
     const { viewFunctions } = useConfig();
@@ -18,7 +20,7 @@ export default function ERC721() {
 }
 
 function ERC721Component({ supportsInterfaceFunction }: { supportsInterfaceFunction: any }) {
-    const { contractAddress, abi } = useConfig();
+    const { contractAddress, abi, setContractTypes } = useConfig();
     const { data, isLoading, error } = useContractRead({
         address: contractAddress,
         abi,
@@ -26,7 +28,15 @@ function ERC721Component({ supportsInterfaceFunction }: { supportsInterfaceFunct
         args: [IACCOUNT_ID],
     });
 
-    if (isLoading || error || data === false || (data as any).success === 0n) {
+    useEffect(() => {
+        if (data === undefined) { return; } 
+
+        if (data === true || (data as any).success === 1n) {
+            setContractTypes((prevContractTypes) => [...prevContractTypes, ContractType.ACCOUNT]);
+        }
+    }, [data]);
+
+    if (isLoading || error || data === false || (data as any).success === 0n || data === undefined) {
         return null;
     }
 

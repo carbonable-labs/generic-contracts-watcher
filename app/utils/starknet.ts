@@ -1,4 +1,5 @@
-import { num } from "starknet";
+import type { Uint256 } from "starknet";
+import { num, shortString, uint256 } from "starknet";
 
 export async function fetchAbi(provider: any, address: string) {
   try {
@@ -16,20 +17,45 @@ export async function fetchAbi(provider: any, address: string) {
   }
 }
 
-export function bigIntToNumber(value: bigint) {
-    return parseFloat(value.toString());
+export function uint256ToString(value: Uint256) {
+    return uint256.uint256ToBN(value).toString();
+}
+
+export function bigIntToString(value: bigint) {
+    return value.toString();
 }
 
 export function hasSupportsInterface(obj: any): boolean {
-    if (typeof obj === 'string') {
-      // Check if the current object is a string and contains "supports_interface"
-      return obj.includes('supports_interface');
-    } else if (Array.isArray(obj)) {
-      // If it's an array, recursively check each element
-      return obj.some((item) => hasSupportsInterface(item));
-    } else if (typeof obj === 'object') {
-      // If it's an object, recursively check each property's values
-      return Object.values(obj).some((value) => hasSupportsInterface(value));
-    }
-    return false;
+  if (typeof obj === 'string') {
+    // Check if the current object is a string and contains "supports_interface"
+    return obj.includes('supports_interface');
+  } else if (Array.isArray(obj)) {
+    // If it's an array, recursively check each element
+    return obj.some((item) => hasSupportsInterface(item));
+  } else if (typeof obj === 'object') {
+    // If it's an object, recursively check each property's values
+    return Object.values(obj).some((value) => hasSupportsInterface(value));
   }
+  return false;
+}
+
+export function formatData(data: any, output: any) {
+  const value = data.hasOwnProperty(output.name) ? data[output.name] : data;
+
+  if (value === undefined) {
+    return "undefined";
+  }
+
+  switch (output.type) {
+    case "Uint256":
+      return  uint256.uint256ToBN(value).toString();
+    case "core::integer::u256":
+      return num.isBigInt(value) ? value.toString() : uint256.uint256ToBN(value).toString() ;
+    case "felt":
+      return shortString.decodeShortString(num.toHex(value));
+    case "core::felt252":
+      return shortString.decodeShortString(num.toHex(value));
+    default:
+      return "Not supported";
+  }
+}
